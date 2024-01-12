@@ -7,11 +7,18 @@ use std::io::{self, Read};
 const DIMENSION: i32 = 8;
 const SIZE: usize = (DIMENSION * DIMENSION) as usize;
 
-fn main() -> io::Result<()> {
+fn main() {
     //get file content
     let args: Vec<String> = env::args().collect();
     let path = Path::new(&args[1]);
-    let content: Vec<u8> = fs::read_to_string(path)?.into_bytes();
+    let content: Vec<u8> = match fs::read_to_string(path) {
+        Ok(t) => t.into_bytes(),
+        Err(e) => {
+            eprintln!("{}",e);
+            std::process::exit(1);
+        }
+    };
+
 
     let mut jumps: HashMap<usize, usize> = HashMap::new();
     let mut jump_stack: Vec<usize> = Vec::new();
@@ -32,7 +39,7 @@ fn main() -> io::Result<()> {
                         i += 1;
                     }
                     None => {
-                        eprintln!("char {i}: unmatched ] bracket");
+                        eprintln!("Error char {i}: unmatched ] bracket");
                         std::process::exit(1)
                     }
                 }
@@ -44,6 +51,10 @@ fn main() -> io::Result<()> {
             }
         }
         i += 1
+    }
+    if !jump_stack.is_empty() {
+        eprintln!("Error char {}: unmatched ] bracket ", jump_stack.pop().unwrap_or_else(|| 0));
+        std::process::exit(1);
     }
 
     let mut mem: [u8; SIZE] = [0; SIZE];
@@ -102,6 +113,4 @@ fn main() -> io::Result<()> {
         }
         i += 1;
     }
-    println!("{:?}", mem);
-    Ok(())
 }
