@@ -14,7 +14,7 @@
 `bf2d` offers two installation methods: using pre-compiled binaries or building from source. 
 
 ### Using Pre-Compiled Binaries
-1. Download the latest binary for your operating system from the [Releases page](https://github.com/keitannunes/bf2d/releases/tag/Release).
+1. Download the latest binary for your operating system from the [Releases page](https://github.com/keitannunes/brainfuck-2d/releases).
 2. Unzip the downloaded file to a directory of your choice.
 3. Add the directory to your system's PATH environment variable to access `bf2d` from any command line.
 
@@ -55,7 +55,7 @@ In addition to specifying the path to a Brainfuck file, `bf2d` also supports rec
 
 To use standard input, simply pipe the Brainfuck code into `brainfuck_2d` without specifying a file path. For example:
 ```
-echo '++++++[>++++++++<-]>.' | brainfuck_2d
+echo '++++++[>++++++++<-]>.' | bf2d
 ```
 
 This command will interpret and execute the code provided directly via the command line.
