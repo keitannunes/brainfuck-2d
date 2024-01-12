@@ -23,7 +23,7 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> Result<(usize, Vec<u8>),
     let mut i: usize = 0;
     while i < content.len() {
         match content[i] {
-            b'>' | b'<' | b'^' | b'v' | b'V' | b'+' | b'-' | b',' | b'.' | b'!' | b'\n' | b' ' | b'\t' => (),
+            b'>' | b'<' | b'^' | b'v' | b'V' | b'+' | b'-' | b',' | b'.' | b'!' | b'\n' | b' ' | b'\t' | b'\r' => (),
             b'[' => {
                 jump_stack.push(i);
             }
@@ -107,7 +107,7 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> Result<(usize, Vec<u8>),
                     }
                 }
             }
-            b'\n' | b'\t' | b' ' => (),
+            b'\n' | b'\t' | b' ' | b'\r' => (),
             _ => { //comment
                 match jumps.get(&i) {
                     Some(x) => i = *x,
