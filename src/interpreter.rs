@@ -1,10 +1,8 @@
 
 use std::collections::HashMap;
 use std::io::{Read, self};
-
-pub fn interpret(content: Vec<u8>, dimension: usize) -> (usize, Vec<u8>) {
+pub fn interpret(content: Vec<u8>, dimension: usize) -> Result<(usize, Vec<u8>), String> {
     let size: usize  = dimension*dimension;
-
     let mut jumps: HashMap<usize, usize> = HashMap::new();
     let mut jump_stack: Vec<usize> = Vec::new();
 
@@ -24,8 +22,7 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> (usize, Vec<u8>) {
                         i += 1;
                     }
                     None => {
-                        eprintln!("Error char {i}: unmatched ] bracket");
-                        std::process::exit(1)
+                        panic!("char {i}: unmatched ] bracket");
                     }
                 }
             }
@@ -38,8 +35,7 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> (usize, Vec<u8>) {
         i += 1
     }
     if !jump_stack.is_empty() {
-        eprintln!("Error char {}: unmatched [ bracket ", jump_stack.pop().unwrap_or_else(|| 0));
-        std::process::exit(1);
+        return Err(format!("char {}: unmatched [ bracket ", jump_stack.pop().unwrap_or_else(|| 0)));
     }
     let mut mem: Vec<u8> = vec![0u8; size];
     let mut ptr: usize = 0;
@@ -73,11 +69,10 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> (usize, Vec<u8>) {
                         if character.is_ascii() {
                             mem[ptr] = character;
                         } else {
-                            eprintln!("Runtime Error: Non-ASCII character entered.");
-                            std::process::exit(1);
+                            return Err(String::from("Runtime: Non-ASCII character entered"))
                         }
                     }
-                    Err(error) => println!("Error reading input: {}", error),
+                    Err(e) => return Err(format!("Error reading input: {}", e))
                 }
             }
             b'.' => print!("{}", mem[ptr] as char),
@@ -90,8 +85,7 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> (usize, Vec<u8>) {
                     match jumps.get(&i) {
                         Some(x) => i = *x,
                         None => {
-                            eprintln!("Internal Error: Jump at {i} not found");
-                            std::process::exit(1);
+                            return Err(format!("Internal Error: Jump at {i} not found"))
                         }
                     }
                 }
@@ -101,13 +95,12 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> (usize, Vec<u8>) {
                 match jumps.get(&i) {
                     Some(x) => i = *x,
                     None => {
-                        eprintln!("Internal Error: Jump at {i} not found");
-                        std::process::exit(1);
+                        return Err(format!("Internal Error: Jump at {i} not found"));
                     }
                 }
             }
         }
         i += 1;
     }
-    return (ptr, mem);
+    return Ok((ptr, mem));
 }
