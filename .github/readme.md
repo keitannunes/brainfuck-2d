@@ -84,4 +84,4 @@ Here's a simple *hello!* world program in Brainfuck-2D:
 
 
 ## License
-`brainfuck_2d` is licensed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.ja.html).
+`brainfuck-2d` is licensed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.ja.html).
