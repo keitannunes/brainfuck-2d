@@ -30,7 +30,7 @@ fn main() {
     let dimension = args.dimension;
     let (ptr, mem) = interpreter::interpret(content, dimension);
     if args.view_memory {
-        println!("---\nFinal dump:");
+        println!("\n---\nFinal dump:");
         println!("pointer = {}", ptr);
         for i in 0..dimension {
             println!("{:?}", &mem[i*dimension..i*dimension+dimension]);

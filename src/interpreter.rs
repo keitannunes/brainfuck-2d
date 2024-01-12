@@ -12,7 +12,7 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> (usize, Vec<u8>) {
     let mut i: usize = 0;
     while i < content.len() {
         match content[i] {
-            b'>' | b'<' | b'+' | b'-' | b',' | b'.' | b'\n' | b' ' | b'\t' => (), //do nothing
+            b'>' | b'<' | b'^' | b'v' | b'V' | b'+' | b'-' | b',' | b'.' | b'!' | b'\n' | b' ' | b'\t' => (),
             b'[' => {
                 jump_stack.push(i);
             }
@@ -38,10 +38,9 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> (usize, Vec<u8>) {
         i += 1
     }
     if !jump_stack.is_empty() {
-        eprintln!("Error char {}: unmatched ] bracket ", jump_stack.pop().unwrap_or_else(|| 0));
+        eprintln!("Error char {}: unmatched [ bracket ", jump_stack.pop().unwrap_or_else(|| 0));
         std::process::exit(1);
     }
-
     let mut mem: Vec<u8> = vec![0u8; size];
     let mut ptr: usize = 0;
     let mut buffer = [0; 1]; //buffer for reading a character in
@@ -57,6 +56,14 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> (usize, Vec<u8>) {
                     ptr = (ptr - 1) % size;
                 }
             }
+            b'^' => {
+                if ptr < dimension {
+                    ptr = size - dimension + ptr;
+                } else {
+                    ptr = (ptr - dimension) % size;
+                }
+            }
+            b'v' | b'V' => ptr = (ptr + dimension) % size,
             b'+' => mem[ptr] = mem[ptr].wrapping_add(1),
             b'-' => mem[ptr] = mem[ptr].wrapping_sub(1),
             b',' => {
@@ -74,6 +81,10 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> (usize, Vec<u8>) {
                 }
             }
             b'.' => print!("{}", mem[ptr] as char),
+            b'!' => for (i, char) in mem.iter().enumerate() {
+                if i != 0 && i % dimension == 0 {println!()}
+                print!("{}", if *char == 0 {' '} else {*char as char});
+            }
             b'[' | b']' => {
                 if mem[ptr] != 0 && content[i] == b']' || mem[ptr] == 0 && content[i] == b'[' {
                     match jumps.get(&i) {
