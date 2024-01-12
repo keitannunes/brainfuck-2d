@@ -1,7 +1,20 @@
-
 use std::collections::HashMap;
 use std::io::{Read, self};
-pub fn interpret(content: Vec<u8>, dimension: usize) -> Result<(usize, Vec<u8>), String> {
+use std::fmt;
+#[derive(Debug, Clone)]
+pub struct InterpreterError {
+    location: usize,
+    reason: String,
+}
+impl fmt::Display for InterpreterError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "char {}: {} ", self.location, self.reason)
+    }
+}
+impl std::error::Error for InterpreterError {}
+
+
+pub fn interpret(content: Vec<u8>, dimension: usize) -> Result<(usize, Vec<u8>), InterpreterError> {
     let size: usize  = dimension*dimension;
     let mut jumps: HashMap<usize, usize> = HashMap::new();
     let mut jump_stack: Vec<usize> = Vec::new();
@@ -22,7 +35,7 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> Result<(usize, Vec<u8>),
                         i += 1;
                     }
                     None => {
-                        panic!("char {i}: unmatched ] bracket");
+                        return Err(InterpreterError {location: i, reason: String::from("Unmatched ] bracket")})
                     }
                 }
             }
@@ -35,7 +48,7 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> Result<(usize, Vec<u8>),
         i += 1
     }
     if !jump_stack.is_empty() {
-        return Err(format!("char {}: unmatched [ bracket ", jump_stack.pop().unwrap_or_else(|| 0)));
+        return Err(InterpreterError {location: jump_stack.pop().unwrap_or_else(|| 0), reason: String::from("Unmatched [ bracket")});
     }
     let mut mem: Vec<u8> = vec![0u8; size];
     let mut ptr: usize = 0;
@@ -69,10 +82,10 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> Result<(usize, Vec<u8>),
                         if character.is_ascii() {
                             mem[ptr] = character;
                         } else {
-                            return Err(String::from("Runtime: Non-ASCII character entered"))
+                            return Err(InterpreterError {location: i, reason: String::from("Non-ASCII character entered")})
                         }
                     }
-                    Err(e) => return Err(format!("Error reading input: {}", e))
+                    Err(e) => return Err(InterpreterError {location: i, reason: format!("{}",e) })
                 }
             }
             b'.' => print!("{}", mem[ptr] as char),
@@ -85,7 +98,7 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> Result<(usize, Vec<u8>),
                     match jumps.get(&i) {
                         Some(x) => i = *x,
                         None => {
-                            return Err(format!("Internal Error: Jump at {i} not found"))
+                            return Err(InterpreterError {location: i, reason: String::from("Jump not found")})
                         }
                     }
                 }
@@ -95,7 +108,7 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> Result<(usize, Vec<u8>),
                 match jumps.get(&i) {
                     Some(x) => i = *x,
                     None => {
-                        return Err(format!("Internal Error: Jump at {i} not found"));
+                        return Err(InterpreterError {location: i, reason: String::from("Jump not found")})
                     }
                 }
             }
