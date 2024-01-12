@@ -52,5 +52,7 @@ fn main() {
         for i in 0..dimension {
             println!("{:?}", &mem[i*dimension..i*dimension+dimension]);
         }
+    } else {
+        println!();
     }
 }
