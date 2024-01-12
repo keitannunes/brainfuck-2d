@@ -65,21 +65,21 @@ This command will interpret and execute the code provided directly via the comma
 ## Commands
 - `>`: Move right in the memory grid (will wrap to next line).
 - `<`: Move left in the memory grid (will wrap to previous line).
+- `^`: Move up in the memory grid.
+- `v`: Move down in the memory grid.
 - `+`: Increment the memory cell at the current position.
 - `-`: Decrement the memory cell at the current position.
 - `.`: Output the character signified by the cell at the current position.
+- `!`: Print the entire memory grid ('\0' will be printed as a space).
 - `,`: Input a character and store it in the cell at the current position.
 - `[`: Jump past the matching `]` if the cell at the current position is 0.
 - `]`: Jump back to the matching `[` if the cell at the current position is nonzero.
-- `^`: Move up in the memory grid.
-- `v`: Move down in the memory grid.
-- `!`: Print the entire memory grid ('\0' will be printed as a space).
 
 ## Example
 Here's a simple *hello!* world program in Brainfuck-2D:
 
 ```
->>>>>+++++++[>+++++<-]<v+++++++[>+++++<-]<v+++++++[>+++++>+++++>+++++>+++++><<<<<-]<v+++++++[>+++++>>>>+++++<<<<<-]<v+++++++[>+++++>>>>+++++<<<<<-]<v+++++++[>+++++>>>>+++++<<<<<-]v>+++++++[<+++++>>>>+++++<<<-]>>>>++++++++++[>++++++++++<-]>+<++++++++++++[>>+++++++++<<-]!>>.>+++++++++++[>++++++++++<-]>+.>+++++++++++[>+++<-]>.
+v>>>>>+++++++[>+++++<-]<v+++++++[>+++++<-]<v+++++++[>+++++>+++++>+++++>+++++><<<<<-]<v+++++++[>+++++>>>>+++++<<<<<-]<v+++++++[>+++++>>>>+++++<<<<<-]<v+++++++[>+++++>>>>+++++<<<<<-]v>+++++++[<+++++>>>>+++++<<<-]>>>>++++++++++[>++++++++++<-]>+<++++++++++++[>>+++++++++<<-]!>>.>+++++++++++[>++++++++++<-]>+.>+++++++++++[>+++<-]>.
 ```
 
 
