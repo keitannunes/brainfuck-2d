@@ -1,5 +1,6 @@
 mod interpreter;
 use std::fs;
+use std::io::Read;
 use std::path::Path;
 use clap::{arg, Parser};
 #[derive(Parser)] // requires `derive` feature
@@ -12,20 +13,29 @@ struct Args {
     view_memory: bool,
 
     #[arg()]
-    filename: String,
+    filename: Option<String>,
 }
 
 fn main() {
-
     //get file content
     let args = Args::parse();
-    let path = Path::new(&args.filename);
     let cname: String = std::env::args().next().unwrap();
-    let content: Vec<u8> = match fs::read_to_string(path) {
-        Ok(t) => t.into_bytes(),
-        Err(e) => {
-            eprintln!("{cname}: {e} ");
-            std::process::exit(1);
+    let content = match args.filename {
+        Some(t) => {
+            match fs::read_to_string(Path::new(&t)) {
+                Ok(t) => t.into_bytes(),
+                Err(e) => {
+                    eprintln!("{cname}: {e} ");
+                    std::process::exit(1);
+                }
+            }
+        }
+        None => {
+                let mut input =  Vec::new();
+                let stdin = std::io::stdin();
+                let mut handle = stdin.lock();
+                handle.read_to_end(&mut input).expect("Error");
+                input
         }
     };
     let dimension = args.dimension;

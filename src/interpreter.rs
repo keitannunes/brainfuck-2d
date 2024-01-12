@@ -53,6 +53,7 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> Result<(usize, Vec<u8>),
     let mut mem: Vec<u8> = vec![0u8; size];
     let mut ptr: usize = 0;
     let mut buffer = [0; 1]; //buffer for reading a character in
+
     //second pass
     i = 0;
     while i < content.len() {
@@ -85,7 +86,10 @@ pub fn interpret(content: Vec<u8>, dimension: usize) -> Result<(usize, Vec<u8>),
                             return Err(InterpreterError {location: i, reason: String::from("Non-ASCII character entered")})
                         }
                     }
-                    Err(e) => return Err(InterpreterError {location: i, reason: format!("{}",e) })
+                    Err(e) => return Err(InterpreterError {
+                        location: i,
+                        reason: format!("{} (This issue is likely caused by using the ',' command after using stdin to send the program.",e)
+                    })
                 }
             }
             b'.' => print!("{}", mem[ptr] as char),
