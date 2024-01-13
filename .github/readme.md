@@ -6,7 +6,7 @@
 ## Features
 - **Two-Dimensional Memory Mapping**: Memory in `bf2d` is arranged in a square grid, allowing for both horizontal and vertical traversal.
 - **Vertical Navigation Commands**: New commands `^` and `v` are introduced for moving up and down in the memory grid.
-- **Memory Print Command**: The `!` command outputs the entire memory grid, providing a comprehensive view of the current program state.
+- **Memory Print Command**: The `!` command outputs the entire memory grid at once.
 - **Classic Brainfuck Interpreter**: Traditional brainfuck programs are supported
 
 ## Installation
@@ -53,7 +53,7 @@ Options:
 #### Using Standard Input
 In addition to specifying the path to a Brainfuck file, `bf2d` also supports receiving Brainfuck code through standard input (stdin).
 
-To use standard input, simply pipe the Brainfuck code into `brainfuck_2d` without specifying a file path. For example:
+To use standard input, simply pipe the Brainfuck code into `bf2d` without specifying a file path. For example:
 ```
 echo '++++++[>++++++++<-]>.' | bf2d
 ```
