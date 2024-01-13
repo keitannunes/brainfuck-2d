@@ -35,7 +35,7 @@ If you prefer to build the interpreter from the source, follow these steps:
    cargo build --release
    ```
    
-### Usage
+## Usage
 
 ```
 Usage: bf2d [OPTIONS] [FILENAME]
